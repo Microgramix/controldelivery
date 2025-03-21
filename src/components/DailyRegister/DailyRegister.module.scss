@@ -1,0 +1,66 @@
+.form {
+  background-color: #1E1E1E;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border: 1px solid #ce8d00;
+}
+
+label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #CCC;
+}
+
+input[type="date"],
+input[type="number"] {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #333;
+  border-radius: 0.5rem;
+  background-color: #2C2C2C;
+  color: #E0E0E0;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input[type="date"]:focus,
+input[type="number"]:focus {
+  border-color: #ce8d00;
+  box-shadow: 0 0 8px #ce8d00;
+}
+
+.smallInput {
+  width: 60px; // Largura reduzida
+  padding: 0.25rem; // Padding menor
+  font-size: 0.9rem;
+  border: 1px solid #333;
+  border-radius: 0.25rem; // Bordas mais suaves
+  background-color: #2C2C2C;
+  color: #E0E0E0;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &:focus {
+    border-color: #ce8d00;
+    box-shadow: 0 0 8px rgba(206, 141, 0, 0.5);
+  }
+}
+
+.driverRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+
+  span {
+    flex: 1; // Ocupa o espaço disponível
+    margin-right: 2rem; // Espaçamento entre o nome e a caixa de número
+    white-space: nowrap; // Evita que o nome quebre em várias linhas
+    text-overflow: ellipsis; // Adiciona "..." se o nome for muito longo
+  }
+}
