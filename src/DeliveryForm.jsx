@@ -115,7 +115,7 @@ const DeliveryForm = () => {
     >
 
 <img 
-        src="../public/logof.png" // Caminho para a imagem na pasta public
+        src="https://fastrack.lu/wp-content/uploads/2023/05/logo-fastrack-white-top-du-site-1024x214.png" // Caminho para a imagem na pasta public
         alt="Logo" 
         className={styles.logo} // Classe para estilização
       />
