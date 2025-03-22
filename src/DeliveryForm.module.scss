@@ -8,6 +8,8 @@
   border: 2px solid #ce7c00;
   border-radius: 1rem;
   box-shadow: 0 0 20px #ce5600;
+  overflow: hidden;
+  box-sizing: border-box; /* Garante que padding e border não aumentem a largura */
 }
 
 h1, h2 {
@@ -53,20 +55,43 @@ button:hover {
   color: #FFF;
   box-shadow: 0 0 15px #ce5600;
 }
+
 .logo {
   max-width: auto;
   height: 50px;
 }
-@media (min-width: 480px) {
+
+/* Estilos para telas pequenas (mobile) */
+@media (max-width: 480px) {
+  .container {
+    padding: 0.5rem; /* Padding menor para telas pequenas */
+  }
+
+  h1, h2 {
+    font-size: 1.5rem; /* Títulos menores para telas pequenas */
+    margin: 0.5rem 0; /* Margem reduzida para títulos */
+  }
+
+  button {
+    font-size: 0.9rem; /* Botões menores para telas pequenas */
+    padding: 0.5rem; /* Padding reduzido para botões */
+  }
+
   .buttonGroup {
-    flex-direction: row;
-    flex-wrap: wrap;
+    flex-direction: column; /* Mantém os botões em coluna em telas pequenas */
     gap: 0.5rem;
   }
 }
 
+/* Estilos para telas maiores (tablets e desktops) */
 @media (min-width: 768px) {
   .container {
-    max-width: 720px;
+    max-width: 720px; /* Limita a largura máxima do conteúdo */
+  }
+
+  .buttonGroup {
+    flex-direction: row; /* Botões em linha para telas maiores */
+    flex-wrap: wrap;
+    gap: 0.5rem;
   }
 }
