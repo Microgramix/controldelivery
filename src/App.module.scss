@@ -16,11 +16,9 @@ body {
   align-items: center;
   justify-content: flex-start; // Alinha o conteúdo no topo
   min-height: 100vh; // Ocupa 100% da altura da tela
-  width: auto; // Ocupa 100% da largura da tela
+  width: 100%; // Ocupa 100% da largura da tela
   box-sizing: border-box; // Garante que padding e border não aumentem a largura
-  padding-left: 0.1rem;
-  
-  padding-right: 2.3rem;
+  padding: 1rem;
   overflow: hidden; // Impede que o conteúdo transborde
 
   // Garante que o conteúdo não ultrapasse a largura da tela
