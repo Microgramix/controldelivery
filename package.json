@@ -10,9 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "firebase": "^11.5.0",
     "framer-motion": "^12.5.0",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^3.0.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-router-dom": "6",
+    "recharts": "^2.15.1",
     "sass-embedded": "^1.86.0"
   },
   "devDependencies": {

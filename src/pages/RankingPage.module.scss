@@ -1,0 +1,19 @@
+.container {
+  width: 100vw;           /* Usa 100% da largura da viewport */
+  padding: 1rem;
+  margin: 0;              /* Remove o auto para não centralizar com um max-width fixo */
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background-color: #121212;
+  color: #E0E0E0;
+  border: 2px solid #ce7c00;
+  border-radius: 1rem;
+  box-shadow: 0 0 20px #ce5600;
+  box-sizing: border-box;
+}
+
+/* Responsividade para telas pequenas */
+@media (max-width: 480px) {
+  .container {
+    padding: 0.5rem;
+  }
+}

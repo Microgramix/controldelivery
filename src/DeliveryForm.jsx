@@ -142,21 +142,6 @@ const DeliveryForm = () => {
           handleDailySubmit={handleDailySubmit}
         />
       )}
-
-      {selectedTeam && (
-        <RankingSection
-          selectedTeam={selectedTeam}
-          selectedMonth={selectedMonth}
-          selectedWeek={selectedWeek}
-          availableMonths={availableMonths}
-          ranking={ranking}
-          totalDeliveries={totalDeliveries}
-          progressPercent={progressPercent}
-          weeklyGoal={weeklyGoal}
-          setSelectedMonth={setSelectedMonth}
-          setSelectedWeek={setSelectedWeek}
-        />
-      )}
     </motion.div>
   );
 };

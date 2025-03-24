@@ -1,12 +1,23 @@
 import React from 'react';
-import styles from './App.module.scss'; // Importando o SCSS module
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import styles from './App.module.scss';
 import DeliveryForm from './DeliveryForm';
+import CompareTeams from './components/CompareTeams/CompareTeams';
+import BottomHeader from './components/BottomHeader/BottomHeader';
+import RankingPage from './pages/RankingPage';
 
 const App = () => {
   return (
-    <div className={styles.appContainer}>
-      <DeliveryForm />
-    </div>
+    <Router>
+      <div className={styles.appContainer}>
+        <Routes>
+          <Route path="/" element={<DeliveryForm />} />
+          <Route path="/compare" element={<CompareTeams />} />
+          <Route path="/ranking" element={<RankingPage />} />
+        </Routes>
+        <BottomHeader />
+      </div>
+    </Router>
   );
 };
 

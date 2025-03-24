@@ -1,6 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import styles from './RankingSection.module.scss';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 const RankingSection = ({
   selectedTeam,
@@ -31,14 +33,29 @@ const RankingSection = ({
     </div>
   );
 
+  const exportToPdf = async () => {
+    const element = document.getElementById('ranking-section');
+    if (!element) return;
+    const canvas = await html2canvas(element);
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const imgProps = pdf.getImageProperties(imgData);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    pdf.save(`ranking_${selectedMonth}_week${selectedWeek}.pdf`);
+  };
+
   return (
     <motion.section
+      id="ranking-section"
       className={styles.rankingSection}
       initial={{ y: 50, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ delay: 0.4 }}
     >
       <h2>Ranking Agregado</h2>
+
       <div className={styles.selectors}>
         <div className={styles.monthSelector}>
           <label>Mês:</label>
@@ -106,6 +123,15 @@ const RankingSection = ({
             </motion.div>
             <p>Total: {totalDeliveries}/{weeklyGoal}</p>
           </div>
+
+          <motion.button
+            className={styles.exportButton}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={exportToPdf}
+          >
+            Exportar PDF
+          </motion.button>
         </>
       ) : (
         selectedMonth && <p>Sem registros para {selectedMonth}, semana {selectedWeek}.</p>
