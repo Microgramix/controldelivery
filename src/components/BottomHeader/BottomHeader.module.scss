@@ -22,6 +22,8 @@
 
 .menu {
   display: flex;
+  /* Sempre em linha */
+  flex-direction: row;
   flex-wrap: wrap;
   gap: 0.75rem;
   list-style: none;
@@ -56,24 +58,20 @@
   box-shadow: 0 0 15px #ce5600;
 }
 
-/* Mobile (até 480px) */
+/* Removemos a media query que altera o flex-direction para column no mobile */
+/* Se desejar ajustar os tamanhos para mobile, pode usar media queries apenas para reduzir padding/font-size */
 @media (max-width: 480px) {
   .bottomHeader {
     padding: 0.5rem;
   }
-
-  .menu {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
+  
   .menu li a {
     font-size: 0.9rem;
     padding: 0.5rem 1rem;
   }
 }
 
-/* Tablet e Desktop (a partir de 768px) */
+/* Para tablets e desktops, os itens já estarão em linha */
 @media (min-width: 768px) {
   .menu {
     flex-direction: row;
