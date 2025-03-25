@@ -1,7 +1,9 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import teamsData from '../teamsData.json';
 import RankingSection from '../components/RankingSection/RankingSection';
 import styles from './RankingPage.module.scss';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../Firebase/firebase';
 
 export default function RankingPage() {
   const [selectedTeam, setSelectedTeam] = useState('');
@@ -24,17 +26,28 @@ export default function RankingPage() {
 
   useEffect(() => {
     if (selectedTeam) {
-      const stored = localStorage.getItem(`records-${selectedTeam}`);
-      setRecordsByDate(stored ? JSON.parse(stored) : {});
-      setSelectedMonth('');
-      setSelectedWeek(1);
+      const fetchTeamRecords = async () => {
+        const teamDocRef = doc(db, 'records', selectedTeam);
+        const docSnap = await getDoc(teamDocRef);
+        if (docSnap.exists()) {
+          setRecordsByDate(docSnap.data());
+        } else {
+          setRecordsByDate({});
+        }
+        setSelectedMonth('');
+        setSelectedWeek(1);
+      };
+      fetchTeamRecords();
     }
   }, [selectedTeam]);
 
   const getWeekInMonth = (dateStr) => Math.ceil(new Date(dateStr).getDate() / 7);
 
   useEffect(() => {
-    if (!selectedTeam || !selectedMonth) return setRanking([]);
+    if (!selectedTeam || !selectedMonth) {
+      setRanking([]);
+      return;
+    }
 
     const monthRecords = Object.entries(recordsByDate)
       .filter(
@@ -60,13 +73,13 @@ export default function RankingPage() {
 
   return (
     <div className={styles.container}>
-      <h1 style={{ textAlign: 'center', color: '#FFF' }}>Ranking</h1>
-      <div style={{ marginBottom: '1rem', textAlign: 'center' }}>
-        <label style={{ color: '#FFF' }}>Equipe:</label>
+      <h1 className={styles.title}>Ranking</h1>
+      <div className={styles.teamSelector}>
+        <label className={styles.label}>Equipe:</label>
         <select
           value={selectedTeam}
           onChange={(e) => setSelectedTeam(e.target.value)}
-          style={{ marginLeft: '0.5rem', padding: '0.5rem' }}
+          className={styles.select}
         >
           <option value="">Selecione uma equipe</option>
           {teamsData.teams.map((team) => (

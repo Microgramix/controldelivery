@@ -12,6 +12,8 @@ import {
 } from 'recharts';
 import teamsData from '../../teamsData.json';
 import styles from './CompareTeams.module.scss';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../../Firebase/firebase';
 
 // Counter animado usando framer-motion
 function Counter({ value }) {
@@ -21,7 +23,7 @@ function Counter({ value }) {
 
   useEffect(() => {
     mv.set(value);
-    spring.on('change', v => setCount(Math.round(v)));
+    spring.on('change', (v) => setCount(Math.round(v)));
   }, [value]);
 
   return <span>{count}</span>;
@@ -34,50 +36,70 @@ export default function CompareTeams() {
   const [availableMonths, setAvailableMonths] = useState([]);
   const [chartData, setChartData] = useState([]);
 
+  // Busca os meses disponíveis a partir dos registros no Firestore
   useEffect(() => {
-    const months = new Set();
-    teamsData.teams.forEach(({ name }) => {
-      const rec = JSON.parse(localStorage.getItem(`records-${name}`) || '{}');
-      Object.keys(rec).forEach(date => months.add(date.slice(0, 7)));
-    });
-    const sorted = Array.from(months).sort();
-    setAvailableMonths(sorted);
-    if (sorted.length) setSelectedMonth(sorted[0]);
+    const fetchAvailableMonths = async () => {
+      const monthsSet = new Set();
+      const promises = teamsData.teams.map(async (team) => {
+        const teamDocRef = doc(db, 'records', team.name);
+        const docSnap = await getDoc(teamDocRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          Object.keys(data).forEach((date) => monthsSet.add(date.slice(0, 7)));
+        }
+      });
+      await Promise.all(promises);
+      const sorted = Array.from(monthsSet).sort();
+      setAvailableMonths(sorted);
+      if (sorted.length) setSelectedMonth(sorted[0]);
+    };
+
+    fetchAvailableMonths();
   }, []);
+
+  // Função para buscar os totais de entregas de uma equipe para o mês selecionado
+  const getTotals = async (team) => {
+    const teamDocRef = doc(db, 'records', team);
+    const docSnap = await getDoc(teamDocRef);
+    let totals = {};
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      Object.entries(data)
+        .filter(([date]) => date.startsWith(selectedMonth))
+        .forEach(([, daily]) => {
+          Object.entries(daily).forEach(([driver, count]) => {
+            totals[driver] = (totals[driver] || 0) + count;
+          });
+        });
+    }
+    return totals;
+  };
 
   useEffect(() => {
     if (!teamA || !teamB || teamA === teamB || !selectedMonth) {
       setChartData([]);
       return;
     }
-    const getTotals = team =>
-      Object.entries(JSON.parse(localStorage.getItem(`records-${team}`) || '{}'))
-        .filter(([date]) => date.startsWith(selectedMonth))
-        .reduce((acc, [, daily]) => {
-          Object.entries(daily).forEach(([driver, count]) => {
-            acc[driver] = (acc[driver] || 0) + count;
-          });
-          return acc;
-        }, {});
-
-    const totalsA = getTotals(teamA);
-    const totalsB = getTotals(teamB);
-    const drivers = Array.from(new Set([...Object.keys(totalsA), ...Object.keys(totalsB)]));
-
-    setChartData(
-      drivers
-        .map(driver => ({
+    const fetchChartData = async () => {
+      const totalsA = await getTotals(teamA);
+      const totalsB = await getTotals(teamB);
+      const drivers = Array.from(new Set([...Object.keys(totalsA), ...Object.keys(totalsB)]));
+      const data = drivers
+        .map((driver) => ({
           driver,
           [teamA]: totalsA[driver] || 0,
           [teamB]: totalsB[driver] || 0,
         }))
-        .sort((a, b) => b[teamA] + b[teamB] - (a[teamA] + a[teamB]))
-    );
+        .sort((a, b) => b[teamA] + b[teamB] - (a[teamA] + a[teamB]));
+      setChartData(data);
+    };
+
+    fetchChartData();
   }, [teamA, teamB, selectedMonth]);
 
   const renderButtonGroup = (options, value, setter) => (
     <div className={styles.buttonGroup}>
-      {options.map(opt => (
+      {options.map((opt) => (
         <motion.button
           key={opt}
           className={value === opt ? styles.activeButton : ''}
@@ -91,7 +113,7 @@ export default function CompareTeams() {
     </div>
   );
 
-  const total = team =>
+  const total = (team) =>
     chartData.reduce((sum, row) => sum + (row[team] || 0), 0);
 
   return (
@@ -100,10 +122,10 @@ export default function CompareTeams() {
 
       <section className={styles.selectorSection}>
         <label>Equipe A</label>
-        {renderButtonGroup(teamsData.teams.map(t => t.name), teamA, setTeamA)}
+        {renderButtonGroup(teamsData.teams.map((t) => t.name), teamA, setTeamA)}
 
         <label>Equipe B</label>
-        {renderButtonGroup(teamsData.teams.map(t => t.name), teamB, setTeamB)}
+        {renderButtonGroup(teamsData.teams.map((t) => t.name), teamB, setTeamB)}
 
         <label>Mês</label>
         {renderButtonGroup(availableMonths, selectedMonth, setSelectedMonth)}

@@ -3,46 +3,44 @@ import { motion } from 'framer-motion';
 import styles from './DeliveryForm.module.scss';
 import teamsData from './teamsData.json';
 import DailyRegister from './components/DailyRegister/DailyRegister';
-import RankingSection from './components/RankingSection/RankingSection';
+
+// Importa métodos do Firestore
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { db } from "./Firebase/firebase";
 
 const DeliveryForm = () => {
+  const [isTouching, setIsTouching] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState('');
   const [selectedDate, setSelectedDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [dailyInput, setDailyInput] = useState({});
   const [recordsByDate, setRecordsByDate] = useState({});
-  const [selectedMonth, setSelectedMonth] = useState('');
-  const [selectedWeek, setSelectedWeek] = useState(1);
-  const [ranking, setRanking] = useState([]);
-
-  const weeklyGoal = 500;
 
   const teamData = useMemo(
     () => teamsData.teams.find((team) => team.name === selectedTeam) || { drivers: [] },
     [selectedTeam]
   );
-  const filteredDrivers = teamData.drivers;
 
-  const availableMonths = useMemo(
-    () => Array.from(new Set(Object.keys(recordsByDate).map((date) => date.slice(0, 7)))),
-    [recordsByDate]
-  );
-
+  // Busca os registros da equipe selecionada no Firestore
   useEffect(() => {
     if (selectedTeam) {
-      const stored = localStorage.getItem(`records-${selectedTeam}`);
-      setRecordsByDate(stored ? JSON.parse(stored) : {});
-      setSelectedMonth('');
-      setSelectedWeek(1);
+      const teamDocRef = doc(db, 'records', selectedTeam);
+      getDoc(teamDocRef)
+        .then((docSnap) => {
+          if (docSnap.exists()) {
+            setRecordsByDate(docSnap.data());
+          } else {
+            setRecordsByDate({});
+          }
+        })
+        .catch((error) => console.error("Erro ao buscar registros:", error));
     }
   }, [selectedTeam]);
 
-  useEffect(() => {
-    if (selectedTeam) {
-      localStorage.setItem(`records-${selectedTeam}`, JSON.stringify(recordsByDate));
-    }
-  }, [selectedTeam, recordsByDate]);
-
+  // Handler para alterações nos inputs
   const handleDailyChange = (name, value) => {
+    setIsTouching(true);
+    setTimeout(() => setIsTouching(false), 200);
+    
     if (name === 'date') {
       setSelectedDate(value);
     } else {
@@ -50,57 +48,44 @@ const DeliveryForm = () => {
     }
   };
 
-  const handleDailySubmit = (e) => {
+  // Handler para submeter os registros e atualizar o Firestore
+  const handleDailySubmit = async (e) => {
     e.preventDefault();
-    setRecordsByDate((prev) => ({
-      ...prev,
-      [selectedDate]: {
-        ...prev[selectedDate],
-        ...Object.entries(dailyInput).reduce((acc, [name, count]) => ({
-          ...acc,
-          [name]: (prev[selectedDate]?.[name] || 0) + count,
-        }), {}),
-      },
-    }));
-    setDailyInput({});
+    setIsTouching(true);
+    setTimeout(() => setIsTouching(false), 300);
+    
+    // Calcula o novo registro para a data selecionada
+    const newRecord = {
+      ...recordsByDate[selectedDate],
+      ...Object.entries(dailyInput).reduce((acc, [name, count]) => {
+        acc[name] = (recordsByDate[selectedDate]?.[name] || 0) + count;
+        return acc;
+      }, {})
+    };
+
+    try {
+      const teamDocRef = doc(db, 'records', selectedTeam);
+      // Atualiza o documento, mesclando os dados existentes
+      await setDoc(teamDocRef, { [selectedDate]: newRecord }, { merge: true });
+      setRecordsByDate((prev) => ({ ...prev, [selectedDate]: newRecord }));
+      setDailyInput({});
+    } catch (error) {
+      console.error("Erro ao atualizar os registros:", error);
+    }
   };
 
-  const getWeekInMonth = (dateStr) => Math.ceil(new Date(dateStr).getDate() / 7);
-
-  useEffect(() => {
-    if (!selectedTeam || !selectedMonth) return setRanking([]);
-
-    const monthRecords = Object.entries(recordsByDate)
-      .filter(([date]) => date.startsWith(selectedMonth) && getWeekInMonth(date) === selectedWeek)
-      .map(([, rec]) => rec);
-
-    const totals = filteredDrivers.reduce((acc, driver) => {
-      acc[driver.name] = monthRecords.reduce((sum, rec) => sum + (rec[driver.name] || 0), 0);
-      return acc;
-    }, {});
-
-    const sorted = Object.entries(totals)
-      .map(([name, count]) => ({ name, count }))
-      .sort((a, b) => b.count - a.count);
-
-    setRanking(sorted);
-  }, [selectedTeam, selectedMonth, selectedWeek, recordsByDate, filteredDrivers]);
-
-  const totalDeliveries = ranking.reduce((sum, { count }) => sum + count, 0);
-  const progressPercent = Math.min((totalDeliveries / weeklyGoal) * 100, 100);
-
-  const renderButtonGroup = (options, value, setter) => (
-    <div className={styles.buttonGroup}>
-      {options.map((opt) => (
+  const TeamSelector = () => (
+    <div className={styles.touchButtonGroup}>
+      {teamsData.teams.map((team) => (
         <motion.button
-          key={opt}
-          className={value === opt ? styles.activeButton : ''}
+          key={team.name}
+          className={`${styles.touchButton} ${selectedTeam === team.name ? styles.active : ''}`}
           whileTap={{ scale: 0.95 }}
-          whileHover={{ scale: 1.05 }}
           transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-          onClick={() => setter(opt)}
+          onClick={() => setSelectedTeam(team.name)}
+          aria-pressed={selectedTeam === team.name}
         >
-          {opt}
+          {team.name}
         </motion.button>
       ))}
     </div>
@@ -108,40 +93,42 @@ const DeliveryForm = () => {
 
   return (
     <motion.div
-      className={styles.container}
+      className={`${styles.mobileContainer} ${isTouching ? styles.touching : ''}`}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.6 }}
+      transition={{ duration: 0.4 }}
     >
-
-<img 
-        src="https://fastrack.lu/wp-content/uploads/2023/05/logo-fastrack-white-top-du-site-1024x214.png" // Caminho para a imagem na pasta public
-        alt="Logo" 
-        className={styles.logo} // Classe para estilização
-      />
-      
-      <h1>Registro Diário de Encomendas</h1>
-
-      <motion.section
-        className={styles.selectorSection}
-        initial={{ y: 30, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.2 }}
-      >
-        <h2>Equipe</h2>
-        {renderButtonGroup(teamsData.teams.map((t) => t.name), selectedTeam, setSelectedTeam)}
-      </motion.section>
-
-      {selectedTeam && (
-        <DailyRegister
-          selectedTeam={selectedTeam}
-          selectedDate={selectedDate}
-          filteredDrivers={filteredDrivers}
-          dailyInput={dailyInput}
-          handleDailyChange={handleDailyChange}
-          handleDailySubmit={handleDailySubmit}
+      <header className={styles.mobileHeader}>
+        <img 
+          src="https://fastrack.lu/wp-content/uploads/2023/05/logo-fastrack-white-top-du-site-1024x214.png"
+          alt="Logo" 
+          className={styles.mobileLogo}
+          loading="lazy"
         />
-      )}
+        <h1 className={styles.mobileTitle}>Registro Diário</h1>
+      </header>
+      <main className={styles.touchScrollArea}>
+        <motion.section
+          className={styles.selectorSection}
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.1 }}
+        >
+          <h2 className={styles.sectionTitle}>Selecione sua Equipe</h2>
+          <TeamSelector />
+        </motion.section>
+        {selectedTeam && (
+          <DailyRegister
+            selectedTeam={selectedTeam}
+            selectedDate={selectedDate}
+            filteredDrivers={teamData.drivers}
+            dailyInput={dailyInput}
+            handleDailyChange={handleDailyChange}
+            handleDailySubmit={handleDailySubmit}
+            isMobile={true}
+          />
+        )}
+      </main>
     </motion.div>
   );
 };
