@@ -1,0 +1,21 @@
+.installButton {
+  /* Remove quaisquer estilos que possam aumentar o tamanho */
+  background: none !important;
+  border: 1px solid #ce8d00 !important;
+  border-radius: 0.25rem !important;
+  padding: 0.2rem 0.4rem !important;
+  margin: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  font-size: 0.8rem !important;
+  width: auto !important;
+  height: auto !important;
+  color: #ce8d00 !important;
+}
+
+.icon {
+  width: 16px !important;
+  height: 16px !important;
+}

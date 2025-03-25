@@ -3,8 +3,6 @@ import { motion } from 'framer-motion';
 import styles from './DeliveryForm.module.scss';
 import teamsData from './teamsData.json';
 import DailyRegister from './components/DailyRegister/DailyRegister';
-
-// Importa métodos do Firestore
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "./Firebase/firebase";
 
@@ -15,12 +13,13 @@ const DeliveryForm = () => {
   const [dailyInput, setDailyInput] = useState({});
   const [recordsByDate, setRecordsByDate] = useState({});
 
+  // Busca dados da equipe selecionada no teamsData.json
   const teamData = useMemo(
     () => teamsData.teams.find((team) => team.name === selectedTeam) || { drivers: [] },
     [selectedTeam]
   );
 
-  // Busca os registros da equipe selecionada no Firestore
+  // Carrega registros da equipe no Firestore
   useEffect(() => {
     if (selectedTeam) {
       const teamDocRef = doc(db, 'records', selectedTeam);
@@ -36,11 +35,11 @@ const DeliveryForm = () => {
     }
   }, [selectedTeam]);
 
-  // Handler para alterações nos inputs
+  // Lida com mudanças nos inputs (data ou quantidade)
   const handleDailyChange = (name, value) => {
     setIsTouching(true);
     setTimeout(() => setIsTouching(false), 200);
-    
+
     if (name === 'date') {
       setSelectedDate(value);
     } else {
@@ -48,24 +47,22 @@ const DeliveryForm = () => {
     }
   };
 
-  // Handler para submeter os registros e atualizar o Firestore
+  // Salva os registros no Firestore
   const handleDailySubmit = async (e) => {
     e.preventDefault();
     setIsTouching(true);
     setTimeout(() => setIsTouching(false), 300);
-    
-    // Calcula o novo registro para a data selecionada
+
     const newRecord = {
       ...recordsByDate[selectedDate],
-      ...Object.entries(dailyInput).reduce((acc, [name, count]) => {
-        acc[name] = (recordsByDate[selectedDate]?.[name] || 0) + count;
+      ...Object.entries(dailyInput).reduce((acc, [driver, count]) => {
+        acc[driver] = (recordsByDate[selectedDate]?.[driver] || 0) + count;
         return acc;
       }, {})
     };
 
     try {
       const teamDocRef = doc(db, 'records', selectedTeam);
-      // Atualiza o documento, mesclando os dados existentes
       await setDoc(teamDocRef, { [selectedDate]: newRecord }, { merge: true });
       setRecordsByDate((prev) => ({ ...prev, [selectedDate]: newRecord }));
       setDailyInput({});
@@ -74,6 +71,7 @@ const DeliveryForm = () => {
     }
   };
 
+  // Componente para selecionar a equipe
   const TeamSelector = () => (
     <div className={styles.touchButtonGroup}>
       {teamsData.teams.map((team) => (
@@ -99,12 +97,6 @@ const DeliveryForm = () => {
       transition={{ duration: 0.4 }}
     >
       <header className={styles.mobileHeader}>
-        <img 
-          src="https://fastrack.lu/wp-content/uploads/2023/05/logo-fastrack-white-top-du-site-1024x214.png"
-          alt="Logo" 
-          className={styles.mobileLogo}
-          loading="lazy"
-        />
         <h1 className={styles.mobileTitle}>Registro Diário</h1>
       </header>
       <main className={styles.touchScrollArea}>
@@ -117,6 +109,7 @@ const DeliveryForm = () => {
           <h2 className={styles.sectionTitle}>Selecione sua Equipe</h2>
           <TeamSelector />
         </motion.section>
+
         {selectedTeam && (
           <DailyRegister
             selectedTeam={selectedTeam}

@@ -5,6 +5,7 @@ import DeliveryForm from './DeliveryForm';
 import CompareTeams from './components/CompareTeams/CompareTeams';
 import BottomHeader from './components/BottomHeader/BottomHeader';
 import RankingPage from './pages/RankingPage';
+import Header from './components/Header/Header'; // importe o Header
 
 const App = () => {
   // Adiciona classe para detectar touch device
@@ -20,6 +21,8 @@ const App = () => {
       {/* Wrapper que ocupa 100% do viewport mobile */}
       <div className={styles.mobileViewport}>
         <div className={styles.appContainer}>
+          {/* Header com logo e botão de instalação */}
+          <Header />
           {/* Área principal rolável */}
           <main className={styles.contentArea}>
             <Routes>

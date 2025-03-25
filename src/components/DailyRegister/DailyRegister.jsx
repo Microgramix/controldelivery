@@ -11,44 +11,22 @@ const DailyRegister = ({
   handleDailySubmit,
 }) => {
   const [showModal, setShowModal] = useState(false);
-  const [confirmValues, setConfirmValues] = useState({});
-  const [error, setError] = useState('');
 
-  // Em vez de submeter diretamente, abre o modal de confirmação
+  // Ao clicar em "Salvar Registro", apenas abre o modal de confirmação
   const handleFormSubmit = (e) => {
     e.preventDefault();
     setShowModal(true);
   };
 
-  // Atualiza o valor de confirmação para cada motorista
-  const handleConfirmChange = (driverName, value) => {
-    setConfirmValues((prev) => ({ ...prev, [driverName]: value }));
-  };
-
-  // Ao confirmar, compara os valores. Se todos coincidirem, submete o registro.
+  // Ao confirmar (Sim), fecha o modal e dispara o handleDailySubmit
   const handleConfirmSubmit = () => {
-    for (let driver of filteredDrivers) {
-      const original = dailyInput[driver.name] || '';
-      const confirmed = confirmValues[driver.name] || '';
-      if (String(original) !== String(confirmed)) {
-        setError(
-          `O valor para ${driver.name} não confere. Por favor, verifique e tente novamente.`
-        );
-        return;
-      }
-    }
-    // Se tudo estiver correto, limpa os estados, fecha o modal e submete
-    setError('');
     setShowModal(false);
-    setConfirmValues({});
-    // Simula um event.preventDefault para a função de submit
     handleDailySubmit({ preventDefault: () => {} });
   };
 
+  // Ao cancelar (Não), fecha o modal
   const handleCancel = () => {
     setShowModal(false);
-    setConfirmValues({});
-    setError('');
   };
 
   return (
@@ -102,40 +80,23 @@ const DailyRegister = ({
           >
             <h3>Confirmação</h3>
             <p>
-              Tem certeza que os números inseridos estão corretos? Este registro é{' '}
-              <strong>irreversível</strong>. Preencha com máximo cuidado e atenção.
+              Tem certeza de que os números inseridos estão corretos?
+              Este registro é <strong>irreversível</strong>.
             </p>
-            {filteredDrivers.map((driver) => (
-              <div key={driver.name} className={styles.confirmRow}>
-                <label>
-                  Confirme {driver.name} (valor: {dailyInput[driver.name] || 0}):
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  value={confirmValues[driver.name] || ''}
-                  onChange={(e) =>
-                    handleConfirmChange(driver.name, e.target.value)
-                  }
-                  className={styles.smallInput}
-                />
-              </div>
-            ))}
-            {error && <p className={styles.error}>{error}</p>}
             <div className={styles.modalButtons}>
               <motion.button
                 onClick={handleConfirmSubmit}
                 whileTap={{ scale: 0.95 }}
                 whileHover={{ scale: 1.05 }}
               >
-                Confirmar
+                Sim
               </motion.button>
               <motion.button
                 onClick={handleCancel}
                 whileTap={{ scale: 0.95 }}
                 whileHover={{ scale: 1.05 }}
               >
-                Cancelar
+                Não
               </motion.button>
             </div>
           </motion.div>

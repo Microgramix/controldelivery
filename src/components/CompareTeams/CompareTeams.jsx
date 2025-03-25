@@ -45,7 +45,10 @@ export default function CompareTeams() {
         const docSnap = await getDoc(teamDocRef);
         if (docSnap.exists()) {
           const data = docSnap.data();
-          Object.keys(data).forEach((date) => monthsSet.add(date.slice(0, 7)));
+          Object.keys(data).forEach((date) => {
+            // Ex.: "2023-06-15".slice(0, 7) => "2023-06"
+            monthsSet.add(date.slice(0, 7));
+          });
         }
       });
       await Promise.all(promises);
@@ -75,6 +78,7 @@ export default function CompareTeams() {
     return totals;
   };
 
+  // Monta o gráfico quando TeamA, TeamB e Mês estão selecionados
   useEffect(() => {
     if (!teamA || !teamB || teamA === teamB || !selectedMonth) {
       setChartData([]);
@@ -90,28 +94,12 @@ export default function CompareTeams() {
           [teamA]: totalsA[driver] || 0,
           [teamB]: totalsB[driver] || 0,
         }))
-        .sort((a, b) => b[teamA] + b[teamB] - (a[teamA] + a[teamB]));
+        .sort((a, b) => (b[teamA] + b[teamB]) - (a[teamA] + a[teamB]));
       setChartData(data);
     };
 
     fetchChartData();
   }, [teamA, teamB, selectedMonth]);
-
-  const renderButtonGroup = (options, value, setter) => (
-    <div className={styles.buttonGroup}>
-      {options.map((opt) => (
-        <motion.button
-          key={opt}
-          className={value === opt ? styles.activeButton : ''}
-          whileTap={{ scale: 0.95 }}
-          whileHover={{ scale: 1.05 }}
-          onClick={() => setter(opt)}
-        >
-          {opt}
-        </motion.button>
-      ))}
-    </div>
-  );
 
   const total = (team) =>
     chartData.reduce((sum, row) => sum + (row[team] || 0), 0);
@@ -121,14 +109,52 @@ export default function CompareTeams() {
       <h2>Comparativo de Equipes</h2>
 
       <section className={styles.selectorSection}>
-        <label>Equipe A</label>
-        {renderButtonGroup(teamsData.teams.map((t) => t.name), teamA, setTeamA)}
+        <div className={styles.field}>
+          <label>Equipe A</label>
+          <select
+            value={teamA}
+            onChange={(e) => setTeamA(e.target.value)}
+            className={styles.select}
+          >
+            <option value="">Selecione uma equipe</option>
+            {teamsData.teams.map((t) => (
+              <option key={t.name} value={t.name}>
+                {t.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
-        <label>Equipe B</label>
-        {renderButtonGroup(teamsData.teams.map((t) => t.name), teamB, setTeamB)}
+        <div className={styles.field}>
+          <label>Equipe B</label>
+          <select
+            value={teamB}
+            onChange={(e) => setTeamB(e.target.value)}
+            className={styles.select}
+          >
+            <option value="">Selecione uma equipe</option>
+            {teamsData.teams.map((t) => (
+              <option key={t.name} value={t.name}>
+                {t.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
-        <label>Mês</label>
-        {renderButtonGroup(availableMonths, selectedMonth, setSelectedMonth)}
+        <div className={styles.field}>
+          <label>Mês</label>
+          <select
+            value={selectedMonth}
+            onChange={(e) => setSelectedMonth(e.target.value)}
+            className={styles.select}
+          >
+            {availableMonths.map((month) => (
+              <option key={month} value={month}>
+                {month}
+              </option>
+            ))}
+          </select>
+        </div>
       </section>
 
       {chartData.length ? (

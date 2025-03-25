@@ -14,6 +14,7 @@ h2 {
   margin-bottom: 1rem;
 }
 
+/* Seção de seleção (Equipe A, Equipe B, Mês) */
 .selectorSection {
   display: flex;
   flex-direction: column;
@@ -21,6 +22,31 @@ h2 {
   margin-bottom: 2rem;
 }
 
+/* Agrupa label e select */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.field label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #FFF;
+}
+
+/* Estilo para o select */
+.select {
+  padding: 0.5rem;
+  border: 1px solid #ce7c00;
+  border-radius: 0.5rem;
+  background-color: #2c2c2c;
+  color: #FFF;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+/* Botões (caso ainda use para algo) */
 .buttonGroup {
   display: flex;
   flex-wrap: wrap;
@@ -50,6 +76,7 @@ button:hover {
   box-shadow: 0 0 15px #ce5600;
 }
 
+/* Cards de resumo (Equipe A e Equipe B) */
 .summary {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -76,6 +103,7 @@ button:hover {
   font-weight: 700;
 }
 
+/* Mensagem quando não há dados */
 .message {
   text-align: center;
   margin-top: 2rem;
@@ -100,7 +128,6 @@ button:hover {
 /* Responsividade */
 @media (max-width: 480px) {
   .selectorSection {
-    flex-direction: column;
     gap: 0.5rem;
   }
 
