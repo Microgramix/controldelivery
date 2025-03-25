@@ -4,11 +4,15 @@ import RankingSection from '../components/RankingSection/RankingSection';
 import styles from './RankingPage.module.scss';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../Firebase/firebase';
+import DatePicker from 'react-datepicker';
+import { format, subDays } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+import 'react-datepicker/dist/react-datepicker.css';
 
 export default function RankingPage() {
   const [selectedTeam, setSelectedTeam] = useState('');
-  const [selectedMonth, setSelectedMonth] = useState('');
-  const [selectedWeek, setSelectedWeek] = useState(1);
+  const [dateRange, setDateRange] = useState([null, null]);
+  const [startDate, endDate] = dateRange;
   const [recordsByDate, setRecordsByDate] = useState({});
   const [ranking, setRanking] = useState([]);
   const weeklyGoal = 530;
@@ -17,91 +21,120 @@ export default function RankingPage() {
     () => teamsData.teams.find((team) => team.name === selectedTeam) || { drivers: [] },
     [selectedTeam]
   );
-  const filteredDrivers = teamData.drivers;
 
-  const availableMonths = useMemo(
-    () => Array.from(new Set(Object.keys(recordsByDate).map((date) => date.slice(0, 7)))),
-    [recordsByDate]
-  );
-
+  // Carrega registros da equipe
   useEffect(() => {
     if (selectedTeam) {
       const fetchTeamRecords = async () => {
         const teamDocRef = doc(db, 'records', selectedTeam);
         const docSnap = await getDoc(teamDocRef);
-        if (docSnap.exists()) {
-          setRecordsByDate(docSnap.data());
-        } else {
-          setRecordsByDate({});
-        }
-        setSelectedMonth('');
-        setSelectedWeek(1);
+        setRecordsByDate(docSnap.exists() ? docSnap.data() : {});
       };
       fetchTeamRecords();
     }
   }, [selectedTeam]);
 
-  const getWeekInMonth = (dateStr) => Math.ceil(new Date(dateStr).getDate() / 7);
-
+  // Atualiza ranking quando seleciona intervalo de datas
   useEffect(() => {
-    if (!selectedTeam || !selectedMonth) {
+    if (!selectedTeam || !startDate || !endDate) {
       setRanking([]);
       return;
     }
 
-    const monthRecords = Object.entries(recordsByDate)
-      .filter(
-        ([date]) =>
-          date.startsWith(selectedMonth) && getWeekInMonth(date) === selectedWeek
-      )
-      .map(([, rec]) => rec);
+    // Filtra registros pelo intervalo de datas
+    const filteredRecords = Object.entries(recordsByDate)
+      .filter(([date]) => {
+        const recordDate = new Date(date);
+        const start = new Date(startDate);
+        start.setHours(0, 0, 0, 0);
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+        return recordDate >= start && recordDate <= end;
+      })
+      .map(([, records]) => records);
 
-    const totals = filteredDrivers.reduce((acc, driver) => {
-      acc[driver.name] = monthRecords.reduce((sum, rec) => sum + (rec[driver.name] || 0), 0);
+    // Calcula totais por motorista
+    const totals = teamData.drivers.reduce((acc, driver) => {
+      acc[driver.name] = filteredRecords.reduce((sum, rec) => sum + (rec[driver.name] || 0), 0);
       return acc;
     }, {});
 
+    // Ordena o ranking
     const sorted = Object.entries(totals)
       .map(([name, count]) => ({ name, count }))
       .sort((a, b) => b.count - a.count);
 
     setRanking(sorted);
-  }, [selectedTeam, selectedMonth, selectedWeek, recordsByDate, filteredDrivers]);
+  }, [selectedTeam, startDate, endDate, recordsByDate, teamData.drivers]);
 
   const totalDeliveries = ranking.reduce((sum, { count }) => sum + count, 0);
   const progressPercent = Math.min((totalDeliveries / weeklyGoal) * 100, 100);
 
+  // Formata o intervalo de datas para exibição
+  const formatDateRange = () => {
+    if (!startDate || !endDate) return 'Selecione um período';
+    return `${format(startDate, 'dd/MM/yyyy')} - ${format(endDate, 'dd/MM/yyyy')}`;
+  };
+
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Ranking</h1>
-      <div className={styles.teamSelector}>
-        <label className={styles.label}>Equipe:</label>
-        <select
-          value={selectedTeam}
-          onChange={(e) => setSelectedTeam(e.target.value)}
-          className={styles.select}
-        >
-          <option value="">Selecione uma equipe</option>
-          {teamsData.teams.map((team) => (
-            <option key={team.name} value={team.name}>
-              {team.name}
-            </option>
-          ))}
-        </select>
+      <h1 className={styles.title}>Ranking de Entregas</h1>
+      
+      <div className={styles.filters}>
+        <div className={styles.filterGroup}>
+          <label>Equipe:</label>
+          <select
+            value={selectedTeam}
+            onChange={(e) => setSelectedTeam(e.target.value)}
+            className={styles.select}
+          >
+            <option value="">Selecione a equipe</option>
+            {teamsData.teams.map((team) => (
+              <option key={team.name} value={team.name}>
+                {team.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        
+        {selectedTeam && (
+          <div className={styles.filterGroup}>
+            <label>Período:</label>
+            <DatePicker
+              selectsRange
+              startDate={startDate}
+              endDate={endDate}
+              onChange={(update) => {
+                setDateRange(update);
+              }}
+              isClearable
+              locale={ptBR}
+              dateFormat="dd/MM/yyyy"
+              placeholderText="Selecione datas"
+              className={styles.datePicker}
+              maxDate={new Date()}
+              minDate={subDays(new Date(), 365)}
+              calendarClassName={styles.calendar}
+              monthsShown={1}     // Mostra apenas 1 mês
+              inline             // Exibe o calendário diretamente (sem popup)
+              fixedHeight        // Mantém altura consistente
+              withPortal={false} // Remove o modal grande
+              shouldCloseOnSelect
+              showMonthDropdown
+              showYearDropdown
+              dropdownMode="select"
+            />
+          </div>
+        )}
       </div>
 
       {selectedTeam && (
         <RankingSection
-          selectedTeam={selectedTeam}
-          selectedMonth={selectedMonth}
-          selectedWeek={selectedWeek}
-          availableMonths={availableMonths}
           ranking={ranking}
           totalDeliveries={totalDeliveries}
           progressPercent={progressPercent}
           weeklyGoal={weeklyGoal}
-          setSelectedMonth={setSelectedMonth}
-          setSelectedWeek={setSelectedWeek}
+          periodLabel={formatDateRange()}
         />
       )}
     </div>

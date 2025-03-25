@@ -1,226 +1,143 @@
-.rankingSection {
-  background-color: #1E1E1E;
-  padding: 1.5rem;
-  border-radius: 1rem;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  border: 2px solid #ce7c00;
-  position: relative;
-  overflow: hidden;
-
-  // Efeito de brilho pulsante na borda
-  &::before {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    background: linear-gradient(45deg, #ce7c00, #ce5600, #ce7c00, #ce5600);
-    background-size: 400% 400%;
-    border-radius: 1rem;
-    z-index: -1;
-    animation: glowing-border 4s linear infinite;
-  }
-}
-
-// Animação da borda brilhante
-@keyframes glowing-border {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-h2 {
-  font-weight: 700;
-  margin-bottom: 1rem;
-  text-align: center;
-  color: #FFF;
-  text-shadow: 0 0 10px rgba(206, 124, 0, 0.7);
-  animation: text-glow 2s infinite alternate;
-}
-
-// Animação de brilho no texto
-@keyframes text-glow {
-  0% {
-    text-shadow: 0 0 10px rgba(206, 124, 0, 0.7);
-  }
-  100% {
-    text-shadow: 0 0 20px rgba(206, 124, 0, 1);
-  }
-}
-
-.selectors {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-
-  .monthSelector,
-  .weekGrid {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-
-    label {
-      font-size: 1rem;
-      font-weight: 600;
-      color: #FFF;
-      text-shadow: 0 0 5px rgba(206, 124, 0, 0.7);
-    }
-  }
-
-  .weekButtons {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 0.5rem;
-  }
-}
-
-.buttonGroup {
-  display: flex;
-  gap: 0.5rem;
-}
-
-button {
+.rankingContainer {
   width: 100%;
-  padding: 0.75rem;
-  font-size: 1rem;
-  font-weight: 600;
-  border: none;
-  border-radius: 0.5rem;
-  background-color: #ce8d00;
-  color: #121212;
-  cursor: pointer;
-  transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  position: relative;
-  overflow: hidden;
-
-  &:hover {
-    background-color: #d07812;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4);
-  }
-
-  &.activeButton {
-    background-color: #ce5600;
-    color: #FFF;
-    box-shadow: 0 0 15px rgba(206, 86, 0, 0.7);
-    animation: active-button-glow 1.5s infinite alternate;
-  }
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 1rem;
+  background-color: #1E1E1E;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-// Animação de brilho no botão ativo
-@keyframes active-button-glow {
-  0% {
-    box-shadow: 0 0 10px rgba(206, 86, 0, 0.7);
-  }
-  100% {
-    box-shadow: 0 0 20px rgba(206, 86, 0, 1);
-  }
+.periodTitle {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #FFF;
+  text-align: center;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #444;
+}
+
+.chartContainer {
+  width: 100%;
+  height: 300px;
+  background-color: #2C2C2C;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .rankingList {
-  list-style: none;
-  padding: 0;
-  margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.8rem;
+}
 
-  .rankingItem {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 1rem;
-    padding: 0.75rem;
-    border-bottom: 1px solid #444;
-    color: #DDD;
-    background-color: #2C2C2C;
-    border-radius: 0.5rem;
-    transition: transform 0.2s, box-shadow 0.2s;
-    position: relative;
-    overflow: hidden;
-
-    &.topThree {
-      background-color: #3700B3;
-      color: #FFF;
-      font-weight: 600;
-      animation: top-three-glow 2s infinite alternate;
-    }
-
-    &:hover {
-      transform: translateX(5px);
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    }
-
-    .rankIcon {
-      margin-right: 0.75rem;
-      font-size: 1.5rem;
-      animation: icon-bounce 0.5s infinite alternate;
-    }
+.driverCard {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  background-color: #2C2C2C;
+  border-radius: 12px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  
+  &:active {
+    transform: scale(0.98);
+  }
+  
+  &:nth-child(1) {
+    background: linear-gradient(90deg, #FFD70030, #2C2C2C);
+    border-left: 4px solid #FFD700;
+  }
+  
+  &:nth-child(2) {
+    background: linear-gradient(90deg, #C0C0C030, #2C2C2C);
+    border-left: 4px solid #C0C0C0;
+  }
+  
+  &:nth-child(3) {
+    background: linear-gradient(90deg, #CD7F3230, #2C2C2C);
+    border-left: 4px solid #CD7F32;
   }
 }
 
-// Animação de brilho para os top 3
-@keyframes top-three-glow {
-  0% {
-    box-shadow: 0 0 10px rgba(55, 0, 179, 0.7);
-  }
-  100% {
-    box-shadow: 0 0 20px rgba(55, 0, 179, 1);
-  }
+.rank {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #ce8d00;
+  width: 40px;
+  text-align: center;
 }
 
-// Animação de bounce para os ícones
-@keyframes icon-bounce {
-  0% {
-    transform: translateY(0);
-  }
-  100% {
-    transform: translateY(-5px);
-  }
-}
-
-.progressContainer {
-  width: 100%;
+.driverInfo {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+}
 
-  .progressBar {
-    width: 100%;
-    height: 1.5rem;
-    background-color: #333;
-    border-radius: 0.75rem;
-    overflow: hidden;
-    position: relative;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+.driverName {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #FFF;
+}
 
-    span {
-      position: absolute;
-      width: 100%;
-      text-align: center;
-      font-size: 0.9rem;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #FFF;
-      text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
-    }
-  }
+.deliveryCount {
+  font-size: 0.9rem;
+  color: #AAA;
+}
 
-  p {
-    text-align: center;
-    font-size: 1rem;
+.goalProgress {
+  margin-top: 1rem;
+  padding: 1.5rem;
+  background-color: #2C2C2C;
+  border-radius: 12px;
+  text-align: center;
+  
+  h3 {
+    font-size: 1.2rem;
     color: #FFF;
-    text-shadow: 0 0 5px rgba(206, 124, 0, 0.7);
+    margin-bottom: 1rem;
+  }
+}
+
+.progressBarContainer {
+  width: 100%;
+  height: 20px;
+  background-color: #333;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.progressBar {
+  height: 100%;
+  background: linear-gradient(90deg, #ce5600, #ce8d00);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFF;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: width 0.5s ease;
+}
+
+// Media queries para tablets
+@media (min-width: 600px) {
+  .rankingContainer {
+    padding: 2rem;
+  }
+  
+  .driverCard {
+    padding: 1rem 1.5rem;
+  }
+  
+  .driverName {
+    font-size: 1.1rem;
+  }
+  
+  .deliveryCount {
+    font-size: 1rem;
   }
 }
