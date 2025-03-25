@@ -16,19 +16,18 @@ const RankingSection = ({
   setSelectedMonth,
   setSelectedWeek,
 }) => {
-  // Mantém a função para renderizar os botões de semana
-  const renderWeekButtons = () => (
-    <div className={styles.weekButtons}>
-      {[1, 2, 3, 4, 5].map((week) => (
+  const renderButtonGroup = (options, value, setter) => (
+    <div className={styles.buttonGroup}>
+      {options.map((opt) => (
         <motion.button
-          key={week}
-          className={selectedWeek === week ? styles.activeButton : ''}
+          key={opt}
+          className={value === opt ? styles.activeButton : ''}
           whileTap={{ scale: 0.95 }}
           whileHover={{ scale: 1.05 }}
           transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-          onClick={() => setSelectedWeek(week)}
+          onClick={() => setter(opt)}
         >
-          {week}
+          {opt}
         </motion.button>
       ))}
     </div>
@@ -58,26 +57,26 @@ const RankingSection = ({
       <h2>Ranking Agregado</h2>
 
       <div className={styles.selectors}>
-        {/* Seletor de mês via <select> */}
         <div className={styles.monthSelector}>
           <label>Mês:</label>
-          <select
-            value={selectedMonth}
-            onChange={(e) => setSelectedMonth(e.target.value)}
-            className={styles.select}
-          >
-            {availableMonths.map((month) => (
-              <option key={month} value={month}>
-                {month}
-              </option>
-            ))}
-          </select>
+          {renderButtonGroup(availableMonths, selectedMonth, setSelectedMonth)}
         </div>
-
-        {/* Botões de semana */}
         <div className={styles.weekGrid}>
           <label>Semana:</label>
-          {renderWeekButtons()}
+          <div className={styles.weekButtons}>
+            {[1, 2, 3, 4, 5].map((week) => (
+              <motion.button
+                key={week}
+                className={selectedWeek === week ? styles.activeButton : ''}
+                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 15 }}
+                onClick={() => setSelectedWeek(week)}
+              >
+                {week}
+              </motion.button>
+            ))}
+          </div>
         </div>
       </div>
 
