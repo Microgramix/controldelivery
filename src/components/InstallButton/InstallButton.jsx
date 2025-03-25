@@ -3,7 +3,7 @@ import styles from './InstallButton.module.scss';
 
 const InstallButton = () => {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
-  const [showButton, setShowButton] = useState(false);
+  const [showButton, setShowButton] = useState(true);
   const [isIos, setIsIos] = useState(false);
 
   // Verifica se o app já está em modo standalone (principalmente iOS)
