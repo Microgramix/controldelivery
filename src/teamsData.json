@@ -18,7 +18,8 @@
         { "brand": "MG", "model": "FA6215", "name": "Kelvin S.", "id": "fasttrack" },
         { "brand": "MG", "model": "FA6218", "name": "Diogo M.", "id": "fasttrack" },
         { "brand": "MG", "model": "FA6201", "name": "Renato S.", "id": "fasttrack" },
-        { "brand": "MG", "model": "FT7799", "name": "Arlindo", "id": "fasttrack" }
+        { "brand": "MG", "model": "FT7799", "name": "Arlindo", "id": "fasttrack" },
+        { "brand": "MG", "model": "FT7799", "name": "Ivan S.", "id": "fasttrack" }
       ]
     },
     {
@@ -64,8 +65,8 @@
       "name": "Team Independent",
       "drivers": [
         { "brand": "EV8", "model": "TJ6122", "name": "David P.", "id": "fasttrack" },
-        { "brand": "PEUGOT", "model": "FA6207", "name": "Filipe B.", "id": "fasttrack" },
-        { "brand": "MG", "model": "FA6203", "name": "Driver 1.", "id": "fasttrack" }
+        { "brand": "PEUGOT", "model": "FA6207", "name": "Filipe B.", "id": "fasttrack" }
+        
       ]
     }
   ]
