@@ -12,6 +12,9 @@ const DeliveryForm = () => {
   const [selectedDate, setSelectedDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [dailyInput, setDailyInput] = useState({});
   const [recordsByDate, setRecordsByDate] = useState({});
+  const [passwordInput, setPasswordInput] = useState('');
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [tempSelectedTeam, setTempSelectedTeam] = useState('');
 
   // Busca dados da equipe selecionada no teamsData.json
   const teamData = useMemo(
@@ -34,6 +37,25 @@ const DeliveryForm = () => {
         .catch((error) => console.error("Erro ao buscar registros:", error));
     }
   }, [selectedTeam]);
+
+  // Verifica a senha da equipe
+  const verifyPassword = () => {
+    const team = teamsData.teams.find(team => team.name === tempSelectedTeam);
+    if (team && team.password === passwordInput) {
+      setSelectedTeam(tempSelectedTeam);
+      setShowPasswordModal(false);
+      setPasswordInput('');
+    } else {
+      alert('Senha incorreta!');
+      setPasswordInput('');
+    }
+  };
+
+  // Handler para seleção de equipe (abre modal de senha)
+  const handleTeamSelect = (teamName) => {
+    setTempSelectedTeam(teamName);
+    setShowPasswordModal(true);
+  };
 
   // Lida com mudanças nos inputs (data ou quantidade)
   const handleDailyChange = (name, value) => {
@@ -80,7 +102,7 @@ const DeliveryForm = () => {
           className={`${styles.touchButton} ${selectedTeam === team.name ? styles.active : ''}`}
           whileTap={{ scale: 0.95 }}
           transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-          onClick={() => setSelectedTeam(team.name)}
+          onClick={() => handleTeamSelect(team.name)}
           aria-pressed={selectedTeam === team.name}
         >
           {team.name}
@@ -122,6 +144,47 @@ const DeliveryForm = () => {
           />
         )}
       </main>
+
+      {/* Modal de Senha */}
+      {showPasswordModal && (
+        <div className={styles.modalOverlay}>
+          <motion.div 
+            className={styles.modalContent}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            <h3 className={styles.modalTitle}>Digite a senha para {tempSelectedTeam}</h3>
+            <input
+              type="password"
+              value={passwordInput}
+              onChange={(e) => setPasswordInput(e.target.value)}
+              placeholder="Senha"
+              className={styles.passwordInput}
+              autoFocus
+            />
+            <div className={styles.modalButtons}>
+              <motion.button
+                onClick={verifyPassword}
+                whileTap={{ scale: 0.95 }}
+                className={styles.confirmButton}
+              >
+                Confirmar
+              </motion.button>
+              <motion.button
+                onClick={() => {
+                  setShowPasswordModal(false);
+                  setPasswordInput('');
+                }}
+                whileTap={{ scale: 0.95 }}
+                className={styles.cancelButton}
+              >
+                Cancelar
+              </motion.button>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </motion.div>
   );
 };

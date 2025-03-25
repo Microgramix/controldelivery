@@ -11,7 +11,7 @@ export default function RankingPage() {
   const [selectedWeek, setSelectedWeek] = useState(1);
   const [recordsByDate, setRecordsByDate] = useState({});
   const [ranking, setRanking] = useState([]);
-  const weeklyGoal = 500;
+  const weeklyGoal = 530;
 
   const teamData = useMemo(
     () => teamsData.teams.find((team) => team.name === selectedTeam) || { drivers: [] },
