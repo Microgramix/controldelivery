@@ -29,7 +29,7 @@
         { "brand": "Kia EV6", "model": "DP8686", "name": "David P.", "id": "fasttrack" },
         { "brand": "MG", "model": "FA6204", "name": "Sebastiao S.", "id": "fasttrack" },
         { "brand": "Kia EV6", "model": "ES1306", "name": "Rui P.", "id": "fasttrack" },
-        { "brand": "Kia Picanto", "model": "FD5172", "name": "Miguel", "id": "fasttrack" }
+        { "brand": "Kia Picanto", "model": "FD5172", "name": "Miguel", "id": "fasttrack" },
         { "brand": "MG", "model": "FT7798", "name": "Cosimo", "id": "fasttrack" }
       ]
     },
@@ -58,6 +58,14 @@
         { "brand": "Kia Picanto", "model": "TJ6122", "name": "Ricardo A.", "id": "fasttrack" },
         { "brand": "MG", "model": "FA6207", "name": "Figarella", "id": "fasttrack" },
         { "brand": "MG", "model": "FA6203", "name": "Wagner", "id": "fasttrack" }
+      ]
+    },
+    {
+      "name": "Team Independent",
+      "drivers": [
+        { "brand": "EV8", "model": "TJ6122", "name": "David P.", "id": "fasttrack" },
+        { "brand": "PEUGOT", "model": "FA6207", "name": "Filipe B.", "id": "fasttrack" },
+        { "brand": "MG", "model": "FA6203", "name": "Driver 1.", "id": "fasttrack" }
       ]
     }
   ]
