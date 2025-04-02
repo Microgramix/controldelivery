@@ -5,6 +5,8 @@ import DeliveryForm from './DeliveryForm';
 import CompareTeams from './components/CompareTeams/CompareTeams';
 import BottomHeader from './components/BottomHeader/BottomHeader';
 import RankingPage from './pages/RankingPage';
+import AdminTeams from './AdminTeams';
+
 import Header from './components/Header/Header'; // importe o Header
 
 const App = () => {
@@ -29,6 +31,8 @@ const App = () => {
               <Route path="/" element={<DeliveryForm />} />
               <Route path="/compare" element={<CompareTeams />} />
               <Route path="/ranking" element={<RankingPage />} />
+              <Route path="/admin-teams" element={<AdminTeams />} />
+
             </Routes>
           </main>
           

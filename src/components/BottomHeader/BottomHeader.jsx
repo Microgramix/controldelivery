@@ -9,6 +9,7 @@ export default function BottomHeader() {
           <li><a href="/">Home</a></li>
           <li><a href="/ranking">Ranking</a></li>
           <li><a href="/compare">Comparar</a></li>
+          <li><a href="/admin-teams">Admin</a></li>
         </ul>
       </nav>
     </header>

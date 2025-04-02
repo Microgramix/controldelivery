@@ -4,76 +4,75 @@
       "name": "Team Fonseca",
       "password": "97",
       "drivers": [
-        { "brand": "MG", "model": "FA6213", "name": "Pedro M.", "id": "fasttrack" },
-        { "brand": "MG", "model": "FT7760", "name": "ZEC", "id": "fasttrack" },
-        { "brand": "MG", "model": "FT7796", "name": "Patrice", "id": "fasttrack" },
-        { "brand": "MG", "model": "FT7797", "name": "Fonseca J.", "id": "fasttrack" },
-        { "brand": "MG", "model": "FT7706", "name": "Heliomar", "id": "fasttrack" }
+        { "brand": "MG", "model": "FA6213", "name": "Pedro M.", "id": "teamFonseca-1" },
+        { "brand": "MG", "model": "FT7760", "name": "ZEC", "id": "teamFonseca-2" },
+        { "brand": "MG", "model": "FT7796", "name": "Patrice", "id": "teamFonseca-3" },
+        { "brand": "MG", "model": "FT7797", "name": "Fonseca J.", "id": "teamFonseca-4" },
+        { "brand": "MG", "model": "FT7706", "name": "Heliomar", "id": "teamFonseca-5" }
       ]
     },
     {
       "name": "Team Ivan",
       "password": "19",
       "drivers": [
-        { "brand": "MG", "model": "FA6211", "name": "Nene C.", "id": "fasttrack" },
-        { "brand": "MG", "model": "FA6217", "name": "Tiago S.", "id": "fasttrack" },
-        { "brand": "MG", "model": "FA6215", "name": "Kelvin S.", "id": "fasttrack" },
-        { "brand": "MG", "model": "FA6218", "name": "Diogo M.", "id": "fasttrack" },
-        { "brand": "MG", "model": "FA6201", "name": "Renato S.", "id": "fasttrack" },
-        { "brand": "MG", "model": "FT7799", "name": "Arlindo", "id": "fasttrack" },
-        { "brand": "MG", "model": "FT7799", "name": "Ivan S.", "id": "fasttrack" }
+        { "brand": "MG", "model": "FA6211", "name": "Nene C.", "id": "teamIvan-1" },
+        { "brand": "MG", "model": "FA6217", "name": "Tiago S.", "id": "teamIvan-2" },
+        { "brand": "MG", "model": "FA6215", "name": "Kelvin S.", "id": "teamIvan-3" },
+        { "brand": "MG", "model": "FA6218", "name": "Diogo M.", "id": "teamIvan-4" },
+        { "brand": "MG", "model": "FA6201", "name": "Renato S.", "id": "teamIvan-5" },
+        { "brand": "MG", "model": "FT7799", "name": "Arlindo", "id": "teamIvan-6" },
+        { "brand": "MG", "model": "FT7799", "name": "Ivan S.", "id": "teamIvan-7" }
       ]
     },
     {
       "name": "Team Rui",
       "password": "06",
       "drivers": [
-        { "brand": "Kia Picanto", "model": "FD5173", "name": "Rufino", "id": "fasttrack" },
-        { "brand": "MG", "model": "FT7795", "name": "Jaime", "id": "fasttrack" },
-        { "brand": "Kia EV6", "model": "DP8686", "name": "David P.", "id": "fasttrack" },
-        { "brand": "MG", "model": "FA6204", "name": "Sebastiao S.", "id": "fasttrack" },
-        { "brand": "Kia EV6", "model": "ES1306", "name": "Rui P.", "id": "fasttrack" },
-        { "brand": "Kia Picanto", "model": "FD5172", "name": "Miguel", "id": "fasttrack" },
-        { "brand": "MG", "model": "FT7798", "name": "Cosimo", "id": "fasttrack" }
+        { "brand": "Kia Picanto", "model": "FD5173", "name": "Rufino", "id": "teamRui-1" },
+        { "brand": "MG", "model": "FT7795", "name": "Jaime", "id": "teamRui-2" },
+        { "brand": "Kia EV6", "model": "DP8686", "name": "David P.", "id": "teamRui-3" },
+        { "brand": "MG", "model": "FA6204", "name": "Sebastiao S.", "id": "teamRui-4" },
+        { "brand": "Kia EV6", "model": "ES1306", "name": "Rui P.", "id": "teamRui-5" },
+        { "brand": "Kia Picanto", "model": "FD5172", "name": "Miguel", "id": "teamRui-6" },
+        { "brand": "MG", "model": "FT7798", "name": "Cosimo", "id": "teamRui-7" }
       ]
     },
     {
       "name": "Team Samuel",
       "password": "69",
       "drivers": [
-        { "brand": "MG", "model": "FA6200", "name": "Wilson G.", "id": "fasttrack" },
-        { "brand": "MG", "model": "FT6969", "name": "Samuel H.", "id": "fasttrack" },
-        { "brand": "MG", "model": "FA6210", "name": "Erik", "id": "fasttrack" },
-        { "brand": "MG", "model": "FA6208", "name": "Jordan P.", "id": "fasttrack" },
-        { "brand": "MG", "model": "FA6212", "name": "Marcello", "id": "fasttrack" },
-        { "brand": "MG", "model": "FT7700", "name": "Raju", "id": "fasttrack" }
+        { "brand": "MG", "model": "FA6200", "name": "Wilson G.", "id": "teamSamuel-1" },
+        { "brand": "MG", "model": "FT6969", "name": "Samuel H.", "id": "teamSamuel-2" },
+        { "brand": "MG", "model": "FA6210", "name": "Erik", "id": "teamSamuel-3" },
+        { "brand": "MG", "model": "FA6208", "name": "Jordan P.", "id": "teamSamuel-4" },
+        { "brand": "MG", "model": "FA6212", "name": "Marcello", "id": "teamSamuel-5" },
+        { "brand": "MG", "model": "FT7700", "name": "Raju", "id": "teamSamuel-6" }
       ]
     },
     {
       "name": "Team Sushi Kirchberg",
       "password": "16",
       "drivers": [
-        { "brand": "MG", "model": "FA6209", "name": "Rui Varela", "id": "fasttrack" },
-        { "brand": "MG", "model": "FT7794", "name": "Farlom Miguel", "id": "fasttrack" },
-        { "brand": "MG", "model": "FA6216", "name": "Fred", "id": "fasttrack" }
+        { "brand": "MG", "model": "FA6209", "name": "Rui Varela", "id": "teamSushiKirchberg-1" },
+        { "brand": "MG", "model": "FT7794", "name": "Farlom Miguel", "id": "teamSushiKirchberg-2" },
+        { "brand": "MG", "model": "FA6216", "name": "Fred", "id": "teamSushiKirchberg-3" }
       ]
     },
     {
       "name": "Team Sushi Ville",
       "password": "22",
       "drivers": [
-        { "brand": "Kia Picanto", "model": "TJ6122", "name": "Ricardo A.", "id": "fasttrack" },
-        { "brand": "MG", "model": "FA6207", "name": "Figarella", "id": "fasttrack" },
-        { "brand": "MG", "model": "FA6203", "name": "Wagner", "id": "fasttrack" }
+        { "brand": "Kia Picanto", "model": "TJ6122", "name": "Ricardo A.", "id": "teamSushiVille-1" },
+        { "brand": "MG", "model": "FA6207", "name": "Figarella", "id": "teamSushiVille-2" },
+        { "brand": "MG", "model": "FA6203", "name": "Wagner", "id": "teamSushiVille-3" }
       ]
     },
     {
       "name": "Team Independent",
       "password": "86",
       "drivers": [
-        { "brand": "EV8", "model": "TJ6122", "name": "David P.", "id": "fasttrack" },
-        { "brand": "PEUGOT", "model": "FA6207", "name": "Filipe B.", "id": "fasttrack" }
-        
+        { "brand": "EV8", "model": "TJ6122", "name": "David P.", "id": "teamIndependent-1" },
+        { "brand": "PEUGOT", "model": "FA6207", "name": "Filipe B.", "id": "teamIndependent-2" }
       ]
     }
   ]
