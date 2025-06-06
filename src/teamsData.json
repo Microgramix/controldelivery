@@ -1,14 +1,16 @@
 {
   "teams": [
     {
-      "name": "Team Fonseca",
+      "name": "Team Heliomar",
       "password": "97",
       "drivers": [
         { "brand": "MG", "model": "FA6213", "name": "Pedro M.", "id": "teamFonseca-1" },
         { "brand": "MG", "model": "FT7760", "name": "ZEC", "id": "teamFonseca-2" },
         { "brand": "MG", "model": "FT7796", "name": "Patrice", "id": "teamFonseca-3" },
         { "brand": "MG", "model": "FT7797", "name": "Fonseca J.", "id": "teamFonseca-4" },
-        { "brand": "MG", "model": "FT7706", "name": "Heliomar", "id": "teamFonseca-5" }
+        { "brand": "MG", "model": "FT7706", "name": "Heliomar", "id": "teamFonseca-5" },
+        { "brand": "MG", "model": "FA6210", "name": "Erik", "id": "teamSamuel-3" },
+        { "brand": "MG", "model": "FT6969", "name": "Samuel H.", "id": "teamSamuel-2" }
       ]
     },
     {
@@ -28,25 +30,12 @@
       "name": "Team Rui",
       "password": "06",
       "drivers": [
-        { "brand": "Kia Picanto", "model": "FD5173", "name": "Rufino", "id": "teamRui-1" },
         { "brand": "MG", "model": "FT7795", "name": "Jaime", "id": "teamRui-2" },
-        { "brand": "Kia EV6", "model": "DP8686", "name": "David P.", "id": "teamRui-3" },
+        { "brand": "MG", "model": "FA6200", "name": "Wilson G.", "id": "teamRui-3" },
         { "brand": "MG", "model": "FA6204", "name": "Sebastiao S.", "id": "teamRui-4" },
         { "brand": "Kia EV6", "model": "ES1306", "name": "Rui P.", "id": "teamRui-5" },
         { "brand": "Kia Picanto", "model": "FD5172", "name": "Miguel", "id": "teamRui-6" },
         { "brand": "MG", "model": "FT7798", "name": "Cosimo", "id": "teamRui-7" }
-      ]
-    },
-    {
-      "name": "Team Samuel",
-      "password": "69",
-      "drivers": [
-        { "brand": "MG", "model": "FA6200", "name": "Wilson G.", "id": "teamSamuel-1" },
-        { "brand": "MG", "model": "FT6969", "name": "Samuel H.", "id": "teamSamuel-2" },
-        { "brand": "MG", "model": "FA6210", "name": "Erik", "id": "teamSamuel-3" },
-        { "brand": "MG", "model": "FA6208", "name": "Jordan P.", "id": "teamSamuel-4" },
-        { "brand": "MG", "model": "FA6212", "name": "Marcello", "id": "teamSamuel-5" },
-        { "brand": "MG", "model": "FT7700", "name": "Raju", "id": "teamSamuel-6" }
       ]
     },
     {

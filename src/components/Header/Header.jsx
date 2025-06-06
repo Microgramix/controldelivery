@@ -1,11 +1,14 @@
 import React from 'react';
-import InstallButton from '../InstallButton/InstallButton'; // ajuste o caminho conforme necessário
-import styles from './Header.module.scss';
+import InstallButton from '../InstallButton/InstallButton';
 
 const Header = () => {
   return (
-    <header className={styles.header}>
-      <img src="/logof.png" alt="Logo Fastrack" className={styles.logo} />
+    <header className="flex items-center justify-between px-4 py-2 bg-zinc-900 border-b border-orange-500 shadow-md">
+      <img
+        src="/logof.png"
+        alt="Logo Fastrack"
+        className="h-10 w-auto object-contain"
+      />
       <InstallButton />
     </header>
   );

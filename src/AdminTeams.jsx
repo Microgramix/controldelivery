@@ -1,94 +1,122 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { db } from './Firebase/firebase';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import {
+  doc, getDoc, updateDoc, arrayUnion, arrayRemove, setDoc
+} from 'firebase/firestore';
 import teamsData from './teamsData.json';
-import styles from './AdminTeams.module.scss';
 
 const ADMIN_PASSWORD = 'admin123';
 
 export default function AdminTeams() {
   const [enteredPassword, setEnteredPassword] = useState('');
   const [authorized, setAuthorized] = useState(false);
+  const [teams, setTeams] = useState([]);
   const [selectedTeam, setSelectedTeam] = useState('');
-  const [selectedDate, setSelectedDate] = useState(() => new Date().toISOString().slice(0, 10));
-  const [records, setRecords] = useState({});
-  const [loading, setLoading] = useState(false);
+  const [drivers, setDrivers] = useState([]);
+  const [newDriver, setNewDriver] = useState({ brand: '', model: '', name: '', id: '' });
   const [message, setMessage] = useState('');
 
-  const teamData = useMemo(
-    () => teamsData.teams.find((team) => team.name === selectedTeam) || { drivers: [] },
-    [selectedTeam]
-  );
-
-  const handleLogin = () => {
-    if (enteredPassword === ADMIN_PASSWORD) {
-      setAuthorized(true);
-    } else {
-      alert('Senha incorreta');
-    }
-  };
+  useEffect(() => {
+    setTeams(teamsData.teams.map(team => ({ name: team.name })));
+  }, []);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const loadDrivers = async () => {
       if (!selectedTeam) return;
-      setLoading(true);
-      const teamDocRef = doc(db, 'records', selectedTeam);
-      const snap = await getDoc(teamDocRef);
-      if (snap.exists()) {
-        setRecords(snap.data());
-      } else {
-        setRecords({});
+      const teamRef = doc(db, 'teams', selectedTeam);
+      const snap = await getDoc(teamRef);
+      if (snap.exists()) setDrivers(snap.data().drivers || []);
+      else {
+        const jsonTeam = teamsData.teams.find(t => t.name === selectedTeam);
+        if (jsonTeam) {
+          await setDoc(teamRef, {
+            password: jsonTeam.password,
+            drivers: jsonTeam.drivers
+          });
+          setDrivers(jsonTeam.drivers);
+        }
       }
-      setLoading(false);
     };
-    fetchData();
+    loadDrivers();
   }, [selectedTeam]);
 
-  const handleChange = (driverName, value) => {
-    setRecords((prev) => ({
-      ...prev,
-      [selectedDate]: {
-        ...prev[selectedDate],
-        [driverName]: Number(value)
-      }
-    }));
+  const handleLogin = () => {
+    if (enteredPassword === ADMIN_PASSWORD) setAuthorized(true);
+    else alert('Senha incorreta');
   };
 
-  const handleSave = async () => {
-    try {
-      const teamDocRef = doc(db, 'records', selectedTeam);
-      await setDoc(teamDocRef, { [selectedDate]: records[selectedDate] }, { merge: true });
-      setMessage('Registros atualizados com sucesso!');
-    } catch (err) {
-      setMessage('Erro ao salvar os dados.');
-    }
+  const getNextId = () => {
+    const prefix = selectedTeam.toLowerCase().replace(/\s/g, '');
+    const existingIds = drivers.map(d => parseInt(d.id.split('-')[1] || '0')).filter(n => !isNaN(n));
+    const next = Math.max(0, ...existingIds) + 1;
+    return `${prefix}-${next}`;
+  };
+
+  const handleAddDriver = async () => {
+    if (!newDriver.name || !newDriver.model || !newDriver.brand) return;
+    const driver = { ...newDriver, id: getNextId() };
+    const teamRef = doc(db, 'teams', selectedTeam);
+    await updateDoc(teamRef, {
+      drivers: arrayUnion(driver)
+    });
+    setDrivers(prev => [...prev, driver]);
+    setNewDriver({ brand: '', model: '', name: '', id: '' });
+    setMessage('Motorista adicionado!');
+    setTimeout(() => setMessage(''), 3000);
+  };
+
+  const handleRemoveDriver = async (driver) => {
+    const teamRef = doc(db, 'teams', selectedTeam);
+    await updateDoc(teamRef, { drivers: arrayRemove(driver) });
+    setDrivers(prev => prev.filter(d => d.id !== driver.id));
+    setMessage('Motorista removido!');
+    setTimeout(() => setMessage(''), 3000);
+  };
+
+  const handleTransferDriver = async (driver, newTeamName) => {
+    const fromRef = doc(db, 'teams', selectedTeam);
+    const toRef = doc(db, 'teams', newTeamName);
+    await updateDoc(fromRef, { drivers: arrayRemove(driver) });
+    await updateDoc(toRef, { drivers: arrayUnion(driver) });
+    setDrivers(prev => prev.filter((d) => d.id !== driver.id));
+    setMessage(`Transferido para ${newTeamName}`);
     setTimeout(() => setMessage(''), 3000);
   };
 
   if (!authorized) {
     return (
-      <div className={styles.loginContainer}>
-        <h2>Área Restrita</h2>
+      <div className="p-6 max-w-md mx-auto text-center">
+        <h2 className="text-xl font-bold text-orange-400 mb-4">Área Restrita</h2>
         <input
           type="password"
           value={enteredPassword}
           onChange={(e) => setEnteredPassword(e.target.value)}
           placeholder="Digite a senha"
+          className="w-full mb-4 p-3 bg-zinc-700 text-white rounded"
         />
-        <button onClick={handleLogin}>Entrar</button>
+        <button
+          onClick={handleLogin}
+          className="w-full bg-orange-500 hover:bg-orange-600 text-black font-semibold py-2 rounded"
+        >
+          Entrar
+        </button>
       </div>
     );
   }
 
   return (
-    <div className={styles.editorContainer}>
-      <h2>Edição de Entregas por Data</h2>
+    <div className="p-6 max-w-3xl mx-auto">
+      <h2 className="text-2xl font-bold text-orange-400 mb-4">Gestão de Motoristas</h2>
 
-      <div className={styles.fieldGroup}>
-        <label>Equipe:</label>
-        <select value={selectedTeam} onChange={(e) => setSelectedTeam(e.target.value)}>
+      <div className="mb-6">
+        <label className="block mb-2 font-semibold">Equipe:</label>
+        <select
+          value={selectedTeam}
+          onChange={(e) => setSelectedTeam(e.target.value)}
+          className="w-full p-2 rounded bg-zinc-800 text-white"
+        >
           <option value="">Selecione a equipe</option>
-          {teamsData.teams.map((team) => (
+          {teams.map((team) => (
             <option key={team.name} value={team.name}>{team.name}</option>
           ))}
         </select>
@@ -96,43 +124,71 @@ export default function AdminTeams() {
 
       {selectedTeam && (
         <>
-          <div className={styles.fieldGroup}>
-            <label>Data:</label>
-            <input
-              type="date"
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
-            />
+          <div className="mb-8">
+            <h3 className="text-lg font-semibold text-orange-300 mb-3">Motoristas de {selectedTeam}</h3>
+            {drivers.map((driver) => (
+              <div key={driver.id} className="flex flex-col sm:flex-row sm:items-center justify-between bg-zinc-800 p-3 rounded mb-2 gap-2">
+                <span><strong>{driver.name}</strong> — {driver.model} ({driver.brand})</span>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <button
+                    onClick={() => handleRemoveDriver(driver)}
+                    className="bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded"
+                  >
+                    Remover
+                  </button>
+                  <select
+                    onChange={(e) => e.target.value && handleTransferDriver(driver, e.target.value)}
+                    defaultValue=""
+                    className="bg-zinc-700 text-white rounded px-2 py-1"
+                  >
+                    <option value="" disabled>Transferir para...</option>
+                    {teams
+                      .filter((t) => t.name !== selectedTeam)
+                      .map((team) => (
+                        <option key={team.name} value={team.name}>{team.name}</option>
+                      ))}
+                  </select>
+                </div>
+              </div>
+            ))}
           </div>
 
-          {loading ? (
-            <p>Carregando...</p>
-          ) : (
-            <div className={styles.driversList}>
-              {teamData.drivers.map((driver) => {
-                const current = records[selectedDate]?.[driver.name] || 0;
-                return (
-                  <div key={driver.name} className={styles.driverRow}>
-                    <span><strong>{driver.name}</strong></span>
-                    <span style={{ marginLeft: '10px', color: '#888' }}>
-                      Atual: {current} entregas
-                    </span>
-                    <input
-                      type="number"
-                      min="0"
-                      value={current}
-                      onChange={(e) => handleChange(driver.name, e.target.value)}
-                      placeholder="Entregas"
-                      style={{ marginLeft: '10px', width: '80px' }}
-                    />
-                  </div>
-                );
-              })}
+          <div className="border border-zinc-700 p-4 rounded bg-zinc-800">
+            <h3 className="text-lg font-bold mb-4 text-center text-orange-400">Adicionar Novo Motorista</h3>
+            <div className="flex flex-col gap-3">
+              <input
+                type="text"
+                placeholder="Nome"
+                value={newDriver.name}
+                onChange={(e) => setNewDriver({ ...newDriver, name: e.target.value })}
+                className="p-2 rounded bg-zinc-700 text-white"
+              />
+              <input
+                type="text"
+                placeholder="Modelo"
+                value={newDriver.model}
+                onChange={(e) => setNewDriver({ ...newDriver, model: e.target.value })}
+                className="p-2 rounded bg-zinc-700 text-white"
+              />
+              <input
+                type="text"
+                placeholder="Marca"
+                value={newDriver.brand}
+                onChange={(e) => setNewDriver({ ...newDriver, brand: e.target.value })}
+                className="p-2 rounded bg-zinc-700 text-white"
+              />
+              <button
+                onClick={handleAddDriver}
+                className="bg-green-600 hover:bg-green-500 text-white font-bold py-2 rounded"
+              >
+                Adicionar
+              </button>
             </div>
-          )}
+          </div>
 
-          <button onClick={handleSave}>Salvar Alterações</button>
-          {message && <p className={styles.message}>{message}</p>}
+          {message && (
+            <p className="text-center text-green-400 font-semibold mt-4">{message}</p>
+          )}
         </>
       )}
     </div>
